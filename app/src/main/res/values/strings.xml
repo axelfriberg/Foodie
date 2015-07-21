@@ -3,4 +3,7 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_recipe">RecipeActivity</string>
+    <string name="recipe_instructions_hint">Enter instructions for the recipe here!</string>
+    <string name="edit_button">Edit</string>
 </resources>
