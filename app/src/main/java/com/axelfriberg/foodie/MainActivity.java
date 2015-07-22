@@ -13,8 +13,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Intent intent = new Intent(this, RecipeActivity.class);
-        startActivity(intent);
     }
 
     @Override
@@ -34,6 +32,11 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }
+
+        if (id == R.id.add_button){
+            Intent intent = new Intent(this, AddRecipeActivity.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);

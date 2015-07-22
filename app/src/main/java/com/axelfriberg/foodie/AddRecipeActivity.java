@@ -1,20 +1,19 @@
 package com.axelfriberg.foodie;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class RecipeActivity extends ActionBarActivity {
+public class AddRecipeActivity extends AppCompatActivity {
     private Recipe mRecipe;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recipe);
-        String title = "Chocolate cake";
+        setContentView(R.layout.activity_add_recipe);
+        String title = "Chocolate Cake";
         mRecipe = new Recipe(title);
         setTitle(title);
     }
@@ -22,7 +21,7 @@ public class RecipeActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_recipe, menu);
+        getMenuInflater().inflate(R.menu.menu_add_recipe, menu);
         return true;
     }
 

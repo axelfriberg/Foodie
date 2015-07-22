@@ -6,4 +6,6 @@
     <string name="title_activity_recipe">RecipeActivity</string>
     <string name="recipe_instructions_hint">Enter instructions for the recipe here!</string>
     <string name="edit_button">Edit</string>
+    <string name="add_button">Add Recipe</string>
+    <string name="done_button">Done</string>
 </resources>

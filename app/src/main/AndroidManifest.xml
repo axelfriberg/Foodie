@@ -17,7 +17,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".RecipeActivity"
+            android:name=".AddRecipeActivity"
             android:label="@string/title_activity_recipe"
             android:parentActivityName="com.axelfriberg.foodie.MainActivity">
         </activity>
