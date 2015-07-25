@@ -1,22 +1,67 @@
 package com.axelfriberg.foodie;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.FileInputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by Axel on 2015-07-21.
  * A class for representing a recipe.
  */
-public class Recipe {
-    private String name;
-    private String instruction;
-    private ArrayList<String>  ingredients;
+public class Recipe implements Parcelable, Serializable {
+    private String title;
+    private String instructions;
 
+    public Recipe(){
 
-    public Recipe(String name){
-        this.name = name;
     }
 
-    public void addIngredient(String ing){
-        ingredients.add(ing);
+    public void setTitle(String t){
+        title = t;
     }
+
+    public void setInstructions(String i){
+        instructions = i;
+    }
+
+    public String getTitle(){
+        return title;
+    }
+
+    public String getInstructions(){
+        return instructions;
+    }
+
+    //Parcel code
+    protected Recipe(Parcel in){
+        title = in.readString();
+        instructions = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(instructions);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Recipe> CREATOR = new Parcelable.Creator<Recipe>() {
+        @Override
+        public Recipe createFromParcel(Parcel in) {
+            return new Recipe(in);
+        }
+
+        @Override
+        public Recipe[] newArray(int size) {
+            return new Recipe[size];
+        }
+    };
 }

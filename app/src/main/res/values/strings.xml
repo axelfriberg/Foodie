@@ -8,4 +8,6 @@
     <string name="edit_button">Edit</string>
     <string name="add_button">Add Recipe</string>
     <string name="done_button">Done</string>
+    <string name="recipe_title_hint">Title</string>
+    <string name="title_activity_view_recipe">ViewRecipeActivity</string>
 </resources>

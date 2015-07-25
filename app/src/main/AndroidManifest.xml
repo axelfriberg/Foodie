@@ -19,7 +19,15 @@
         <activity
             android:name=".AddRecipeActivity"
             android:label="@string/title_activity_recipe"
-            android:parentActivityName="com.axelfriberg.foodie.MainActivity">
+            android:parentActivityName=".MainActivity" >
+        </activity>
+        <activity
+            android:name=".ViewRecipeActivity"
+            android:label="@string/title_activity_view_recipe"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.axelfriberg.foodie.MainActivity" />
         </activity>
     </application>
 

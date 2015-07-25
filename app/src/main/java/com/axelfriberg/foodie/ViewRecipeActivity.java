@@ -1,27 +1,30 @@
 package com.axelfriberg.foodie;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 
 
-public class MainActivity extends AppCompatActivity {
-    public final static String EXTRA_MESSAGE = "com.axelfriberg.foodie.MESSAGE";
-    public final static String EXTRA_BOOLEAN = "com.axelfriberg.foodie.BOOLEAN";
+public class ViewRecipeActivity extends AppCompatActivity {
+    private Recipe recipe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_view_recipe);
+        recipe = readFromFile("test");
+        setTitle(recipe.getTitle());
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_view_recipe, menu);
         return true;
     }
 
@@ -37,19 +40,23 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
-        if (id == R.id.add_button){
-            Intent intent = new Intent(this, AddRecipeActivity.class);
-            intent.putExtra(EXTRA_BOOLEAN,true);
-            startActivity(intent);
-        }
-
         return super.onOptionsItemSelected(item);
     }
 
-    public void test(View view){
-        Intent intent = new Intent(this, ViewRecipeActivity.class);
-        String message = "test";
-        intent.putExtra(EXTRA_MESSAGE, message);
-        startActivity(intent);
+    private Recipe readFromFile(String fileName) {
+        Recipe r = new Recipe();
+        try {
+            FileInputStream fis = openFileInput(fileName);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            r = (Recipe) ois.readObject();
+            ois.close();
+            fis.close();
+        }
+        catch (IOException e) {
+            Log.e("Exception", "File read failed: " + e.toString());
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return r;
     }
 }
