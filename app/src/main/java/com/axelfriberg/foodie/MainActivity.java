@@ -39,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
 
         if (id == R.id.add_button){
             Intent intent = new Intent(this, AddRecipeActivity.class);
-            intent.putExtra(EXTRA_BOOLEAN,true);
             startActivity(intent);
         }
 
@@ -48,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void test(View view){
         Intent intent = new Intent(this, ViewRecipeActivity.class);
-        String message = "test";
+        String message = "test space";
         intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
     }

@@ -9,32 +9,30 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
 
 
 public class AddRecipeActivity extends AppCompatActivity {
     private Recipe recipe;
     private EditText mTitleEditText;
     private EditText mInstructionsEditText;
+    private FileUtilities fileUtilities;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_recipe);
         recipe = new Recipe();
+        fileUtilities = new FileUtilities(this);
 
         mTitleEditText = (EditText)findViewById(R.id.title_EditText);
         mInstructionsEditText = (EditText) findViewById(R.id.instructions_EditText);
 
-        Intent intent = getIntent();
-        boolean newNote = intent.getBooleanExtra(MainActivity.EXTRA_BOOLEAN, false);
-        if(newNote){
-            setTitle("New Note");
-        } else {
-            mTitleEditText.setText("Test");
-        }
+        setTitle("New Recipe");
     }
 
     @Override
@@ -58,25 +56,15 @@ public class AddRecipeActivity extends AppCompatActivity {
 
         if (id == R.id.done_button){
             String title = mTitleEditText.getText().toString();
+            String instructions = mInstructionsEditText.getText().toString();
             recipe.setTitle(title);
-            writeToFile(title,recipe);
+            recipe.setInstructions(instructions);
+            fileUtilities.writeToFile(recipe);
             finish();
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void writeToFile(String fileName, Recipe r) {
-        try {
-            FileOutputStream fos = openFileOutput(fileName, Context.MODE_PRIVATE);
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(r);
-            oos.close();
-            fos.close();
-        }
-        catch (IOException e) {
-            Log.e("Exception", "File write failed: " + e.toString());
-        }
-    }
 
 }

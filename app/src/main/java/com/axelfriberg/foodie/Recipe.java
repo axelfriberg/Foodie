@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * Created by Axel on 2015-07-21.
  * A class for representing a recipe.
  */
-public class Recipe implements Parcelable, Serializable {
+public class Recipe implements Parcelable {
     private String title;
     private String instructions;
 
