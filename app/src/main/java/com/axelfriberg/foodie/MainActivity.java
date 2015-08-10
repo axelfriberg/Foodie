@@ -2,6 +2,7 @@ package com.axelfriberg.foodie;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -9,8 +10,7 @@ import android.view.View;
 
 
 public class MainActivity extends AppCompatActivity {
-    public final static String EXTRA_MESSAGE = "com.axelfriberg.foodie.MESSAGE";
-    public final static String EXTRA_BOOLEAN = "com.axelfriberg.foodie.BOOLEAN";
+    public final static String EXTRA_TITLE = "com.axelfriberg.foodie.TITLE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,12 +43,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public void test(View view){
-        Intent intent = new Intent(this, ViewRecipeActivity.class);
-        String message = "test space";
-        intent.putExtra(EXTRA_MESSAGE, message);
-        startActivity(intent);
     }
 }

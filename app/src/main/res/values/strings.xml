@@ -10,4 +10,13 @@
     <string name="done_button">Done</string>
     <string name="recipe_title_hint">Title</string>
     <string name="title_activity_view_recipe">ViewRecipeActivity</string>
+    <string name="title_activity_edit_recipe">EditRecipe</string>
+    <string name="icon_content_description">Icon Description</string>
+    <string name="test_title">Test title</string>
+    <string name="test_des">Test description</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
 </resources>

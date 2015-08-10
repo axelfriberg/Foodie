@@ -19,6 +19,10 @@ public class Recipe implements Parcelable {
 
     }
 
+    public Recipe(String title){
+        this.title = title;
+    }
+
     public void setTitle(String t){
         title = t;
     }
@@ -33,6 +37,11 @@ public class Recipe implements Parcelable {
 
     public String getInstructions(){
         return instructions;
+    }
+
+    @Override
+    public String toString(){
+        return title;
     }
 
     //Parcel code

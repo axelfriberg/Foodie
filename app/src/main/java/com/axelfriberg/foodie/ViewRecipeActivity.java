@@ -22,6 +22,8 @@ public class ViewRecipeActivity extends AppCompatActivity {
     private Recipe recipe;
     private TextView mViewRecipeTextView;
     private FileUtilities fileUtilities;
+    public final static String EXTRA_INSTRUCTIONS = "com.axelfriberg.foodie.INSTRUCTIONS";
+    public final static String EXTRA_TITLE = "com.axelfriberg.foodie.TITLE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +32,7 @@ public class ViewRecipeActivity extends AppCompatActivity {
 
         mViewRecipeTextView = (TextView) findViewById(R.id.view_recipe_TextView);
         Intent intent = getIntent();
-        String title = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+        String title = "Test title";
 
         recipe = new Recipe();
         fileUtilities = new FileUtilities(this);
@@ -40,7 +42,6 @@ public class ViewRecipeActivity extends AppCompatActivity {
 
         setTitle(recipe.getTitle());
         mViewRecipeTextView.setText(recipe.getInstructions());
-
     }
 
     @Override
@@ -60,6 +61,13 @@ public class ViewRecipeActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }
+
+        if(id == R.id.edit_button){
+            Intent intent = new Intent(this, EditRecipeActivity.class);
+            intent.putExtra(EXTRA_TITLE,recipe.getTitle());
+            intent.putExtra(EXTRA_INSTRUCTIONS,recipe.getInstructions());
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
