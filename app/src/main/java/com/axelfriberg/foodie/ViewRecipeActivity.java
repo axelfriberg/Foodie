@@ -1,5 +1,6 @@
 package com.axelfriberg.foodie;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -18,7 +19,7 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 
 
-public class ViewRecipeActivity extends AppCompatActivity {
+public class ViewRecipeActivity extends Activity {
     private Recipe recipe;
     private TextView mViewRecipeTextView;
     private FileUtilities fileUtilities;
@@ -32,7 +33,7 @@ public class ViewRecipeActivity extends AppCompatActivity {
 
         mViewRecipeTextView = (TextView) findViewById(R.id.view_recipe_TextView);
         Intent intent = getIntent();
-        String title = "Test title";
+        String title = intent.getStringExtra(EXTRA_TITLE);
 
         recipe = new Recipe();
         fileUtilities = new FileUtilities(this);

@@ -1,6 +1,7 @@
 package com.axelfriberg.foodie;
 
 import android.app.ListFragment;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
@@ -8,11 +9,15 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
 
 
 public class RecipeListFragment extends ListFragment {
     private ArrayList<RecipeListItem> mItems;        // ListView items list
+    private File[] files;
+    private FileUtilities fu;
+    private ArrayAdapter<RecipeListItem>  adapter;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -21,11 +26,15 @@ public class RecipeListFragment extends ListFragment {
         // initialize the items list
         mItems = new ArrayList<>();
         Resources resources = getResources();
+        files = getActivity().getFilesDir().listFiles();
+        fu = new FileUtilities(getActivity());
 
-        mItems.add(new RecipeListItem(getString(R.string.test_title)));
+        for (int i = 0; i < files.length; i++) {
+            mItems.add(new RecipeListItem(files[i].getName()));
+        }
 
         // initialize and set the list adapter
-        ArrayAdapter<RecipeListItem> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, mItems);
+        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, mItems);
         setListAdapter(adapter);
     }
 
@@ -34,8 +43,20 @@ public class RecipeListFragment extends ListFragment {
         // retrieve theListView item
         RecipeListItem item = mItems.get(position);
 
-        // do something
-        Toast.makeText(getActivity(), item.title, Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getActivity(), ViewRecipeActivity.class);
+        intent.putExtra(ViewRecipeActivity.EXTRA_TITLE, item.title);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();  // Always call the superclass method first
+        File[] tempFiles = getActivity().getFilesDir().listFiles();
+        if(tempFiles.length > files.length){ // Recipe has been added
+            adapter.add(new RecipeListItem(tempFiles[tempFiles.length-1].getName()));
+            files = tempFiles;
+            adapter.notifyDataSetChanged();
+        }
     }
 }
 

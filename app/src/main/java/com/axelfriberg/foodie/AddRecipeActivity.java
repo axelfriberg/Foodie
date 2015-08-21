@@ -1,6 +1,9 @@
 package com.axelfriberg.foodie;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -16,7 +19,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 
 
-public class AddRecipeActivity extends AppCompatActivity {
+public class AddRecipeActivity extends Activity {
     private Recipe recipe;
     private EditText mTitleEditText;
     private EditText mInstructionsEditText;
@@ -55,15 +58,41 @@ public class AddRecipeActivity extends AppCompatActivity {
         }
 
         if (id == R.id.done_button){
-            String title = mTitleEditText.getText().toString();
-            String instructions = mInstructionsEditText.getText().toString();
-            recipe.setTitle(title);
-            recipe.setInstructions(instructions);
-            fileUtilities.writeToFile(recipe);
-            finish();
+            save();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        backCheck();
+    }
+
+    private void save(){
+        String title = mTitleEditText.getText().toString();
+        String instructions = mInstructionsEditText.getText().toString();
+        recipe.setTitle(title);
+        recipe.setInstructions(instructions);
+        fileUtilities.writeToFile(recipe);
+        finish();
+    }
+
+    private void backCheck(){
+        new AlertDialog.Builder(this)
+                .setMessage("Do you want to save the current recipe?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        save();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        finish();
+                    }
+                })
+                .show();
     }
 
 

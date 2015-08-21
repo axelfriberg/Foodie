@@ -1,15 +1,15 @@
 package com.axelfriberg.foodie;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
 
-public class MainActivity extends AppCompatActivity {
-    public final static String EXTRA_TITLE = "com.axelfriberg.foodie.TITLE";
+public class MainActivity extends Activity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
