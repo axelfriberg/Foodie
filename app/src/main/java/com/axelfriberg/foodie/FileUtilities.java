@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -65,5 +66,10 @@ public class FileUtilities {
             Log.e("login activity", "Can not read file: " + e.toString());
         }
         return ret;
+    }
+
+    public boolean delete(String fileName){
+        File file = new File(context.getFilesDir(), fileName);
+        return file.delete();
     }
 }
