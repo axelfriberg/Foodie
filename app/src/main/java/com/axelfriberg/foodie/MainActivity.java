@@ -2,8 +2,8 @@ package com.axelfriberg.foodie;
 
 import android.app.ListActivity;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -19,12 +19,10 @@ import java.util.ArrayList;
 
 
 public class MainActivity extends ListActivity {
-    private ArrayList<RecipeListItem> mItems;        // ListView items list
     private File[] files;
     private FileUtilities fu;
     private ArrayAdapter<RecipeListItem> adapter;
     private ListView mListView;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,17 +30,16 @@ public class MainActivity extends ListActivity {
         setContentView(R.layout.activity_main);
 
         // initialize the items list
-        mItems = new ArrayList<>();
-        Resources resources = getResources();
+        ArrayList<RecipeListItem> items = new ArrayList<>();
         files = this.getFilesDir().listFiles();
         fu = new FileUtilities(this);
 
         for(File file : files){
-            mItems.add(new RecipeListItem(file.getName()));
+            items.add(new RecipeListItem(file.getName()));
         }
 
         // initialize and set the list adapter
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, mItems);
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, items);
         setListAdapter(adapter);
 
         mListView = getListView();
@@ -96,8 +93,6 @@ public class MainActivity extends ListActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
-
-
     }
 
     @Override
@@ -115,6 +110,7 @@ public class MainActivity extends ListActivity {
         if (id == R.id.add_button){
             Intent intent = new Intent(this, AddRecipeActivity.class);
             startActivity(intent);
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -122,9 +118,8 @@ public class MainActivity extends ListActivity {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        // retrieve theListView item
-        RecipeListItem item = mItems.get(position);
-
+        RecipeListItem item = (RecipeListItem) l.getItemAtPosition(position);
+        // retrieve theListView
         Intent intent = new Intent(this, ViewRecipeActivity.class);
         intent.putExtra(ViewRecipeActivity.EXTRA_TITLE, item.title);
         startActivity(intent);
@@ -133,24 +128,33 @@ public class MainActivity extends ListActivity {
     @Override
     public void onResume() {
         super.onResume();  // Always call the superclass method first
-        File[] tempFiles = this.getFilesDir().listFiles();
-        if(tempFiles.length > files.length){ // Recipe has been added
-            adapter.add(new RecipeListItem(tempFiles[tempFiles.length-1].getName()));
-            files = tempFiles;
-            adapter.notifyDataSetChanged();
+        //Load the list of items and add, in case the user has added a new one
+        files = this.getFilesDir().listFiles();
+        if(adapter.getCount() < files.length){
+            adapter.add(new RecipeListItem(files[files.length - 1].getName()));
         }
+        adapter.notifyDataSetChanged();
+
     }
 
     //Deletes the user selected items in the ListView in this fragment
     private void deleteSelectedItems(){
+        adapter.notifyDataSetChanged();
         SparseBooleanArray checked = mListView.getCheckedItemPositions();
+        Log.d("Checked", Integer.toString(checked.size()));
+        Log.d("Adapter count", Integer.toString(adapter.getCount()));
+        ArrayList<RecipeListItem> selectedItems = new ArrayList<>();
         for (int i = 0; i < checked.size(); i++) {
             if (checked.valueAt(i)){
-                String selected = mListView.getItemAtPosition(checked.keyAt(i)).toString();
-                fu.delete(selected);
-                adapter.remove(new RecipeListItem(selected));
-                adapter.notifyDataSetChanged();
+                Log.d("Key at", Integer.toString(checked.keyAt(i)));
+                RecipeListItem selected = (RecipeListItem) mListView.getItemAtPosition(checked.keyAt(i));
+                selectedItems.add(selected);
             }
         }
+        for(RecipeListItem rli : selectedItems){
+            fu.delete(rli.toString());
+            adapter.remove(rli);
+        }
+        adapter.notifyDataSetChanged();
     }
 }

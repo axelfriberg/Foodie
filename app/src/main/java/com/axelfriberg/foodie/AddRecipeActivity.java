@@ -8,7 +8,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import java.io.File;
 
 
 public class AddRecipeActivity extends Activity {
@@ -51,6 +53,25 @@ public class AddRecipeActivity extends Activity {
 
         if (id == R.id.done_button){
             save();
+            return true;
+        }
+
+        if(id == android.R.id.home){
+            new AlertDialog.Builder(this)
+                    .setMessage("Do you want to save the current recipe?")
+                    .setCancelable(false)
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            save();
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            finish();
+                        }
+                    })
+                    .show();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -63,11 +84,28 @@ public class AddRecipeActivity extends Activity {
 
     private void save(){
         String title = mTitleEditText.getText().toString();
-        String instructions = mInstructionsEditText.getText().toString();
-        recipe.setTitle(title);
-        recipe.setInstructions(instructions);
-        fileUtilities.writeToFile(recipe);
-        finish();
+        File[] files = this.getFilesDir().listFiles();
+        if(!fileExists(files,title)){
+            String instructions = mInstructionsEditText.getText().toString();
+            recipe.setTitle(title);
+            recipe.setInstructions(instructions);
+            fileUtilities.writeToFile(recipe);
+            finish();
+        } else {
+            Toast toast = Toast.makeText(this, "That name already exists", Toast.LENGTH_SHORT);
+            toast.show();
+            finish();
+        }
+
+    }
+
+    private boolean fileExists(File[] files, String s){
+        for(File f : files){
+            if (f.getName().compareTo(s) == 0){
+                return true;
+            }
+        }
+        return false;
     }
 
     private void backCheck(){
