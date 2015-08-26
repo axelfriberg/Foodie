@@ -210,6 +210,7 @@ public class AddRecipeActivity extends Activity {
         bmOptions.inJustDecodeBounds = false;
         bmOptions.inSampleSize = scaleFactor;
 
+
         Bitmap bitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath(), bmOptions);
         mImageView.setImageBitmap(bitmap);
         mImageView.setVisibility(View.VISIBLE);

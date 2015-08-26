@@ -1,7 +1,9 @@
 package com.axelfriberg.foodie;
 
+
+import android.app.AlertDialog;
 import android.app.ListActivity;
-import android.content.Intent;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseBooleanArray;
@@ -12,34 +14,27 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 
-import java.io.File;
 import java.util.ArrayList;
 
-
-public class MainActivity extends ListActivity {
-    private File[] files;
+public class GroceryListActivity extends ListActivity {
+    private ArrayAdapter adapter;
     private FileUtilities fu;
-    private ArrayAdapter<String> adapter;
     private ListView mListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_grocery_list);
+        setTitle("Grocery List");
 
         // initialize the items list
-        ArrayList<String> items = new ArrayList<>();
-        files = this.getFilesDir().listFiles();
         fu = new FileUtilities(this);
 
-        for(File file : files){
-            items.add(file.getName());
-        }
-
         // initialize and set the list adapter
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, items);
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, fu.readFromGroceryList());
         setListAdapter(adapter);
 
         mListView = getListView();
@@ -56,8 +51,8 @@ public class MainActivity extends ListActivity {
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
                 // Respond to clicks on the actions in the CAB
                 switch (item.getItemId()) {
-                    case R.id.delete_button:
-                        deleteSelectedItems();
+                    case R.id.done_button:
+                        //deleteSelectedItems();
                         mode.finish(); // Action picked, so close the CAB
                         return true;
                     default:
@@ -69,7 +64,7 @@ public class MainActivity extends ListActivity {
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
                 // Inflate the menu for the CAB
                 MenuInflater inflater = mode.getMenuInflater();
-                inflater.inflate(R.menu.menu_cab_main, menu);
+                inflater.inflate(R.menu.menu_cab_grocery, menu);
                 return true;
             }
 
@@ -91,7 +86,7 @@ public class MainActivity extends ListActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_grocery_list, menu);
         return true;
     }
 
@@ -102,60 +97,62 @@ public class MainActivity extends ListActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        switch (id){
-            case R.id.action_settings:
-                return true;
-            case R.id.add_button:
-                Intent addIntent = new Intent(this, AddRecipeActivity.class);
-                startActivity(addIntent);
-                return true;
-            case R.id.grocery_button:
-                Intent groceryIntent = new Intent(this, GroceryListActivity.class);
-                startActivity(groceryIntent);
-            default:
-                return super.onOptionsItemSelected(item);
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
         }
+
+        if (id == R.id.add_grocery_button){
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Add a list item");
+                builder.setMessage("What do you want to add?");
+                final EditText inputField = new EditText(this);
+                builder.setView(inputField);
+                builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String inputString = inputField.getText().toString();
+                        ArrayList<String> old = fu.readFromGroceryList();
+                        old.add(inputString);
+                        adapter.add(inputString);
+                        StringBuilder sb = new StringBuilder();
+                        for(String s : old){
+                            sb.append(s).append("\n");
+                        }
+                        fu.writeToGroceryList(sb.toString());
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+
+                builder.setNegativeButton("Cancel",null);
+                builder.create().show();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         String item = (String) l.getItemAtPosition(position);
-        // retrieve theListView
-        Intent intent = new Intent(this, ViewRecipeActivity.class);
-        intent.putExtra(ViewRecipeActivity.EXTRA_TITLE, item);
-        startActivity(intent);
+        deleteItem(item);
+
     }
 
     @Override
     public void onResume() {
         super.onResume();  // Always call the superclass method first
-        //Load the list of items and add, in case the user has added a new one
-        files = this.getFilesDir().listFiles();
-        if(adapter.getCount() < files.length){
-            adapter.add(files[files.length - 1].getName());
-        }
-        adapter.notifyDataSetChanged();
-
     }
 
-    //Deletes the user selected items in the ListView in this fragment
-    private void deleteSelectedItems(){
-        adapter.notifyDataSetChanged();
-        SparseBooleanArray checked = mListView.getCheckedItemPositions();
-        Log.d("Checked", Integer.toString(checked.size()));
-        Log.d("Adapter count", Integer.toString(adapter.getCount()));
-        ArrayList<String> selectedItems = new ArrayList<>();
-        for (int i = 0; i < checked.size(); i++) {
-            if (checked.valueAt(i)){
-                Log.d("Key at", Integer.toString(checked.keyAt(i)));
-                String selected = (String) mListView.getItemAtPosition(checked.keyAt(i));
-                selectedItems.add(selected);
-            }
+    private void deleteItem(String s){
+        adapter.remove(s);
+        ArrayList<String> list = fu.readFromGroceryList();
+        list.remove(s);
+        StringBuilder sb = new StringBuilder();
+        for(String string : list){
+            sb.append(string).append("\n");
         }
-        for(String s : selectedItems){
-            fu.delete(s);
-            adapter.remove(s);
-        }
+        fu.writeToGroceryList(sb.toString());
         adapter.notifyDataSetChanged();
     }
 }

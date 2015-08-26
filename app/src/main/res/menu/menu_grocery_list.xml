@@ -1,0 +1,8 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.axelfriberg.foodie.GroceryListActivity">
+    <item android:id="@+id/add_grocery_button"
+        android:title="@string/add_button"
+        android:icon="@drawable/ic_add_white_48dp"
+        android:showAsAction="ifRoom"/>
+</menu>
