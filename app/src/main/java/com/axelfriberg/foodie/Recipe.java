@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class Recipe implements Parcelable {
     private String title;
     private String instructions;
+    private String photoFilePath;
 
     public Recipe(){
 
@@ -31,12 +32,20 @@ public class Recipe implements Parcelable {
         instructions = i;
     }
 
+    public void setPhotoFilePath(String s){
+        photoFilePath = s;
+    }
+
     public String getTitle(){
         return title;
     }
 
     public String getInstructions(){
         return instructions;
+    }
+
+    public String getPhotoFilePath(){
+        return photoFilePath;
     }
 
     @Override

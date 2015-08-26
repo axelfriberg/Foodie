@@ -1,6 +1,7 @@
 package com.axelfriberg.foodie;
 
 import android.content.Context;
+import android.os.Environment;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -11,6 +12,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by Axel on 2015-07-26.
@@ -72,4 +75,6 @@ public class FileUtilities {
         File file = new File(context.getFilesDir(), fileName);
         return file.delete();
     }
+
+
 }

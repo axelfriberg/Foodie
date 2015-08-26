@@ -4,20 +4,26 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-
+import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 public class AddRecipeActivity extends Activity {
@@ -25,7 +31,9 @@ public class AddRecipeActivity extends Activity {
     private EditText mTitleEditText;
     private EditText mInstructionsEditText;
     private FileUtilities fileUtilities;
-    private File f;
+    private ImageView mImageView;
+    private File photoFile;
+    private String fileName;
     protected static final int CAPTURE_IMAGE_REQUEST_CODE = 1;
 
     @Override
@@ -34,10 +42,17 @@ public class AddRecipeActivity extends Activity {
         setContentView(R.layout.activity_add_recipe);
         recipe = new Recipe();
         fileUtilities = new FileUtilities(this);
-        f = new File(getFilesDir()+"/"+"mypic.jpg");
+
+        try {
+            photoFile = createImageFile();
+            fileName = photoFile.getName();
+        } catch (IOException ex) {
+            Log.e("Create", ex.getMessage());
+        }
 
         mTitleEditText = (EditText)findViewById(R.id.title_EditText);
         mInstructionsEditText = (EditText) findViewById(R.id.instructions_EditText);
+        mImageView = (ImageView) findViewById(R.id.imageView_add);
 
         setTitle("New Recipe");
     }
@@ -67,9 +82,7 @@ public class AddRecipeActivity extends Activity {
                 backSaveDialog();
                 return true;
             case R.id.camera_button:
-                Intent i=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                i.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
-                AddRecipeActivity.this.startActivityForResult(i, CAPTURE_IMAGE_REQUEST_CODE);
+                dispatchTakePictureIntent();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -81,23 +94,11 @@ public class AddRecipeActivity extends Activity {
         backSaveDialog();
     }
 
-    /* Se till så att vi visar bilden även efter texrotation. Behöver veta
-	 * storleken på ImageViewn
-	 * Därför gjort detta i denna metod istället för onCreate tex då
-	 * detta värde inte finns tillgängligt då
-	 */
-    //
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if(f.exists()&&hasFocus)
-            updateImageViewFromFile();
-    }
-
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAPTURE_IMAGE_REQUEST_CODE) {
             Log.d("AddRecipe", Integer.toString(resultCode));
             if (resultCode == RESULT_OK) {
-                updateImageViewFromFile();
+                setPic();
                 Log.d("AddRecipe", "ok");
             } else if (resultCode == RESULT_CANCELED) {
                 // User did not want to take a picture
@@ -107,22 +108,6 @@ public class AddRecipeActivity extends Activity {
                 Log.d("AddRecipe", "error");
             }
         }
-
-    }
-
-    private void updateImageViewFromFile() {
-        ImageView imView=(ImageView) findViewById(R.id.imageView_add);
-
-        //Läs in bilden som nu bör finnas där vi sa att den skulle placeras
-        Bitmap bm = BitmapFactory.decodeFile(f.getAbsolutePath());
-        Log.d("AddRecipe", f.getAbsolutePath());
-
-        //Skala om bilden så att den passar i imageviewn
-        Bitmap bm2 = Bitmap.createScaledBitmap(bm,
-                imView.getWidth(),
-                imView.getHeight(),
-                true);
-        imView.setImageBitmap(bm2);
     }
 
     private boolean fileExists(File[] files, String s){
@@ -158,7 +143,13 @@ public class AddRecipeActivity extends Activity {
             String instructions = mInstructionsEditText.getText().toString();
             recipe.setTitle(title);
             recipe.setInstructions(instructions);
+            recipe.setPhotoFilePath(photoFile.getAbsolutePath());
             fileUtilities.writeToFile(recipe);
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString(title, photoFile.getAbsolutePath());
+            Log.d("Add_camera_path", photoFile.getAbsolutePath());
+            editor.commit();
             finish();
         } else {
             Toast toast = Toast.makeText(this, "That name already exists", Toast.LENGTH_SHORT);
@@ -166,6 +157,74 @@ public class AddRecipeActivity extends Activity {
             finish();
         }
 
+    }
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                        Uri.fromFile(photoFile));
+                startActivityForResult(takePictureIntent, CAPTURE_IMAGE_REQUEST_CODE);
+            }
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + ".jpg";
+        //File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        File storageDir = AddRecipeActivity.this.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        return new File(storageDir+"/"+imageFileName);
+    }
+
+    /*
+    private void galleryAddPic() {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(photoFile.getAbsolutePath());
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        this.sendBroadcast(mediaScanIntent);
+    } */
+
+    private void setPic() {
+        // Get the dimensions of the View
+        int targetW = mImageView.getWidth();
+        int targetH = mImageView.getHeight();
+
+        // Get the dimensions of the bitmap
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(photoFile.getAbsolutePath(), bmOptions);
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
+
+        // Determine how much to scale down the image
+        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+
+        // Decode the image file into a Bitmap sized to fill the View
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+
+        Bitmap bitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath(), bmOptions);
+        mImageView.setImageBitmap(bitmap);
+        mImageView.setVisibility(View.VISIBLE);
+    }
+
+     /* Se till så att vi visar bilden även efter texrotation. Behöver veta
+	 * storleken på ImageViewn
+	 * Därför gjort detta i denna metod istället för onCreate tex då
+	 * detta värde inte finns tillgängligt då
+     */
+
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if(photoFile.exists()&&hasFocus)
+            setPic();
     }
 
 

@@ -16,6 +16,7 @@
     <string name="test_des">Test description</string>
     <string name="delete_button">Delete</string>
     <string name="camera_button">Camera</string>
+    <string name="image_path_default">Image Default</string>
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
