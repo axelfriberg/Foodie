@@ -3,7 +3,6 @@ package com.axelfriberg.foodie;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -42,6 +41,7 @@ public class MainActivity extends ListActivity {
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, items);
         setListAdapter(adapter);
 
+        //Makes the list multi choice by use of Context Action Bar
         mListView = getListView();
         mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         mListView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
@@ -49,6 +49,7 @@ public class MainActivity extends ListActivity {
             @Override
             public void onItemCheckedStateChanged(ActionMode mode, int position,
                                                   long id, boolean checked) {
+                //What happens when one or more items are selected by long tap
                 mode.setTitle(mListView.getCheckedItemCount() + " selected items");
             }
 
@@ -119,6 +120,8 @@ public class MainActivity extends ListActivity {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
+        //Decides what happens when an item in the list is clicked
+        //In this case starts an activity to view the clicked recipe
         String item = (String) l.getItemAtPosition(position);
         // retrieve theListView
         Intent intent = new Intent(this, ViewRecipeActivity.class);
@@ -129,32 +132,28 @@ public class MainActivity extends ListActivity {
     @Override
     public void onResume() {
         super.onResume();  // Always call the superclass method first
-        //Load the list of items and add, in case the user has added a new one
+        //When returning to this activity check if the user has added any new recipes,
+        // in that case add them to the list
         files = this.getFilesDir().listFiles();
         if(adapter.getCount() < files.length){
             adapter.add(files[files.length - 1].getName());
         }
         adapter.notifyDataSetChanged();
-
     }
 
-    //Deletes the user selected items in the ListView in this fragment
+    //Deletes the user selected items in the ListView
     private void deleteSelectedItems(){
-        adapter.notifyDataSetChanged();
         SparseBooleanArray checked = mListView.getCheckedItemPositions();
-        Log.d("Checked", Integer.toString(checked.size()));
-        Log.d("Adapter count", Integer.toString(adapter.getCount()));
         ArrayList<String> selectedItems = new ArrayList<>();
-        for (int i = 0; i < checked.size(); i++) {
+        for (int i = 0; i < checked.size(); i++) { //Add the selected items to a list
             if (checked.valueAt(i)){
-                Log.d("Key at", Integer.toString(checked.keyAt(i)));
                 String selected = (String) mListView.getItemAtPosition(checked.keyAt(i));
                 selectedItems.add(selected);
             }
         }
         for(String s : selectedItems){
-            fu.delete(s);
-            adapter.remove(s);
+            fu.delete(s); //Delete the recipe from the phones memory
+            adapter.remove(s); //Remove it from the ListView
         }
         adapter.notifyDataSetChanged();
     }
