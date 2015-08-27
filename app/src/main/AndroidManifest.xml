@@ -23,33 +23,21 @@
             android:name=".AddRecipeActivity"
             android:label="@string/title_activity_recipe"
             android:parentActivityName=".MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.axelfriberg.foodie.MainActivity" />
         </activity>
         <activity
             android:name=".ViewRecipeActivity"
             android:label="@string/title_activity_view_recipe"
             android:parentActivityName=".MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.axelfriberg.foodie.MainActivity" />
         </activity>
         <activity
             android:name=".EditRecipeActivity"
             android:label="@string/title_activity_edit_recipe"
             android:parentActivityName=".ViewRecipeActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.axelfriberg.foodie.ViewRecipeActivity" />
         </activity>
         <activity
             android:name=".GroceryListActivity"
             android:label="@string/title_activity_grocery_list"
             android:parentActivityName=".MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.axelfriberg.foodie.MainActivity" />
         </activity>
     </application>
 
