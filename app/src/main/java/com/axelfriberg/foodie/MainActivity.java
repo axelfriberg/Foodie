@@ -106,8 +106,6 @@ public class MainActivity extends ListActivity {
         int id = item.getItemId();
 
         switch (id){
-            case R.id.action_settings:
-                return true;
             case R.id.add_button:
                 Intent addIntent = new Intent(this, AddRecipeActivity.class);
                 startActivity(addIntent);
@@ -137,9 +135,16 @@ public class MainActivity extends ListActivity {
         //When returning to this activity check if the user has added any new recipes,
         // in that case add them to the list
         files = this.getFilesDir().listFiles();
+        ArrayList<String> list = new ArrayList<>();
+        adapter.clear();
+        for(File f : files) {
+            list.add(f.getName());
+        }
+        adapter.addAll(list);
+        /*
         if(adapter.getCount() < files.length){
             adapter.add(files[files.length - 1].getName());
-        }
+        }*/
         adapter.notifyDataSetChanged();
     }
 

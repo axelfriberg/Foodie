@@ -64,8 +64,6 @@ public abstract class ManageRecipeActivity extends Activity {
         int id = item.getItemId();
 
         switch (id) {
-            case R.id.action_settings:
-                return true;
             case R.id.done_button:
                 save();
                 return true;
@@ -77,21 +75,30 @@ public abstract class ManageRecipeActivity extends Activity {
         }
     }
 
-
-
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //If the user took a picture using the intent, set it in the ImageView.
         if (requestCode == CAPTURE_IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {
             setPic();
             mCurrentPhotoPath = photoFile.getAbsolutePath();
         } else if (requestCode == EDIT_RECIPE_REQUEST_CODE && resultCode == RESULT_OK) {
-            Log.d("TestingTesting","OK");
             String title = data.getStringExtra(EditRecipeActivity.EXTRA_TITLE);
-            recipe.setTitle(title);
-            mTitleEditText.setText(recipe.getTitle());
             String instructions = fileUtilities.readFromFile(title);
-            recipe.setInstructions(instructions);
-            mInstructionsEditText.setText(instructions);
+            if(title.equals(recipe.getTitle())){
+                recipe.setInstructions(instructions);
+                mInstructionsEditText.setText(instructions);
+            } else {
+                fileUtilities.delete(recipe.getTitle());
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString(title, sharedPref.getString(recipe.getTitle(), "NoImage"));
+                editor.remove(recipe.getTitle());
+                editor.apply();
+                recipe.setTitle(title);
+                recipe.setInstructions(instructions);
+                mTitleEditText.setText(title);
+                mInstructionsEditText.setText(instructions);
+                fileUtilities.writeToFile(recipe);
+            }
         }
     }
 

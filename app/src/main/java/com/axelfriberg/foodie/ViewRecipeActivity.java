@@ -57,8 +57,6 @@ public class ViewRecipeActivity extends ManageRecipeActivity {
 
         //noinspection SimplifiableIfStatement
         switch (id) {
-            case R.id.action_settings:
-                return true;
             case R.id.edit_button:
                 Intent intent = new Intent(this, EditRecipeActivity.class);
                 intent.putExtra(EXTRA_TITLE, recipe.getTitle());
