@@ -1,7 +1,8 @@
 package com.axelfriberg.foodie;
 
 import android.content.Context;
-import android.os.Environment;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -12,9 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * Created by Axel on 2015-07-26.
@@ -55,17 +54,19 @@ public class FileUtilities {
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
                 String receiveString;
-                StringBuilder stringBuilder = new StringBuilder();
+                StringBuilder sb = new StringBuilder();
 
                 while ( (receiveString = bufferedReader.readLine()) != null ) {
-                    stringBuilder.append(receiveString).append("\n");
+                    sb.append(receiveString).append("\n");
+                }
+                if(sb.length() >= 1){
+                    sb.setLength(sb.length() - 1); //Remove the last added linebreak
                 }
 
+
                 inputStream.close();
-                ret = stringBuilder.toString();
-
+                ret = sb.toString();
             }
-
         }
         catch (FileNotFoundException e) {
             Log.e("login activity", "File not found: " + e.toString());
@@ -97,7 +98,6 @@ public class FileUtilities {
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
                 String receiveString;
-                StringBuilder stringBuilder = new StringBuilder();
 
                 while ( (receiveString = bufferedReader.readLine()) != null ) {
                    list.add(receiveString);
@@ -116,7 +116,20 @@ public class FileUtilities {
     }
 
     public boolean delete(String fileName){
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        String imagePath = sharedPref.getString(fileName,AddRecipeActivity.NO_IMAGE);
+        if(!imagePath.equals(AddRecipeActivity.NO_IMAGE)){
+            File imageFile = new File(imagePath);
+            if(imageFile.delete()){
+                Log.d("FileUtilities", "Image delete successful");
+            } else {
+                Log.d("FileUtilities", "Image delete unsuccessful");
+            }
+        }
         File file = new File(context.getFilesDir(), fileName);
+        editor.remove(fileName);
+        editor.apply();
         return file.delete();
     }
 }

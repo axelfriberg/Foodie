@@ -1,6 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.axelfriberg.foodie.AddRecipeActivity">
+    tools:context="com.axelfriberg.foodie.ManageRecipeActivity">
 
     <item android:id="@+id/done_button"
         android:title="@string/done_button"
@@ -8,9 +8,9 @@
         android:showAsAction="ifRoom"/>
 
     <item android:id="@+id/action_settings"
-    android:title="@string/action_settings"
-    android:orderInCategory="100"
-    android:showAsAction="never" />
+        android:title="@string/action_settings"
+        android:orderInCategory="100"
+        android:showAsAction="never" />
 
     <item android:id="@+id/camera_button"
         android:title="@string/camera_button"

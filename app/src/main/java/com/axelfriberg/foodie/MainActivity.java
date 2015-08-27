@@ -22,6 +22,8 @@ public class MainActivity extends ListActivity {
     private FileUtilities fu;
     private ArrayAdapter<String> adapter;
     private ListView mListView;
+    public final static String EXTRA_INTENT_ID = "com.axelfriberg.foodie.INTENT.ID";
+    public final static String INTENT_ID = "com.axelfriberg.foodie.MAIN";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

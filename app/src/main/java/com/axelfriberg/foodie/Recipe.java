@@ -3,10 +3,6 @@ package com.axelfriberg.foodie;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.FileInputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
-
 /**
  * Created by Axel on 2015-07-21.
  * A class for representing a recipe.
@@ -14,7 +10,6 @@ import java.util.ArrayList;
 public class Recipe implements Parcelable {
     private String title;
     private String instructions;
-    private String photoFilePath;
 
     public Recipe(){
 
@@ -22,6 +17,11 @@ public class Recipe implements Parcelable {
 
     public Recipe(String title){
         this.title = title;
+    }
+
+    public Recipe(String title, String instructions){
+        this.title = title;
+        this.instructions = instructions;
     }
 
     public void setTitle(String t){
@@ -32,20 +32,12 @@ public class Recipe implements Parcelable {
         instructions = i;
     }
 
-    public void setPhotoFilePath(String s){
-        photoFilePath = s;
-    }
-
     public String getTitle(){
         return title;
     }
 
     public String getInstructions(){
         return instructions;
-    }
-
-    public String getPhotoFilePath(){
-        return photoFilePath;
     }
 
     @Override

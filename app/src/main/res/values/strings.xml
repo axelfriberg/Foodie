@@ -19,5 +19,6 @@
     <string name="image_path_default">NoImage</string>
     <string name="grocery_button">Grocery List</string>
     <string name="title_activity_grocery_list">Grocery List</string>
+    <string name="title_activity_manage_recipe">ManageRecipeActivity</string>
 
 </resources>
