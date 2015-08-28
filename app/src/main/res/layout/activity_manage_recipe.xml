@@ -1,3 +1,7 @@
+<ScrollView
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -16,7 +20,7 @@
     <EditText
         android:id="@+id/instructions_EditText"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@id/title_EditText"
         android:inputType="textMultiLine"
         android:gravity="top"
@@ -25,13 +29,13 @@
 
     <ImageView
         android:id="@+id/imageView_add"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_centerHorizontal="true"
+
         android:layout_below="@id/instructions_EditText"
         android:src="@android:drawable/sym_def_app_icon" />
 
 
 </RelativeLayout>
+</ScrollView>

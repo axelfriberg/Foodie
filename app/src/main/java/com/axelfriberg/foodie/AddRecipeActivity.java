@@ -4,8 +4,8 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 
-
 public class AddRecipeActivity extends ManageRecipeActivity {
+    static final String STATE_PATH = "imagePath";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +28,7 @@ public class AddRecipeActivity extends ManageRecipeActivity {
 
         switch (id) {
             case android.R.id.home:
-                backSaveDialog();
+                showDialog();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -37,6 +37,23 @@ public class AddRecipeActivity extends ManageRecipeActivity {
 
     @Override
     public void onBackPressed() {
-        backSaveDialog();
+        showDialog();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Save the user's current game state
+        savedInstanceState.putString(STATE_PATH, mCurrentPhotoPath);
+
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        // Always call the superclass so it can restore the view hierarchy
+        super.onRestoreInstanceState(savedInstanceState);
+
+        // Restore state members from saved instance
+        mCurrentPhotoPath = savedInstanceState.getString(STATE_PATH);
     }
 }

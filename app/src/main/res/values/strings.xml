@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Foodie</string>
-
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_recipe">RecipeActivity</string>
@@ -20,5 +19,7 @@
     <string name="grocery_button">Grocery List</string>
     <string name="title_activity_grocery_list">Grocery List</string>
     <string name="title_activity_manage_recipe">ManageRecipeActivity</string>
-
+    <string name ="alert_dialog_save_title">Do you want to save this recipe?</string>
+    <string name ="alert_dialog_save_yes">Yes</string>
+    <string name ="alert_dialog_save_no">No</string>
 </resources>

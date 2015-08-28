@@ -2,6 +2,7 @@ package com.axelfriberg.foodie;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -76,62 +77,49 @@ public abstract class ManageRecipeActivity extends Activity {
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("ManageActivitiy_result", Integer.toString(requestCode));
+        Log.d("ManageActivitiy_result", Integer.toString(resultCode));
         //If the user took a picture using the intent, set it in the ImageView.
         if (requestCode == CAPTURE_IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {
             setPic();
             mCurrentPhotoPath = photoFile.getAbsolutePath();
-        } else if (requestCode == EDIT_RECIPE_REQUEST_CODE && resultCode == RESULT_OK) {
+        } else if(requestCode == EDIT_RECIPE_REQUEST_CODE && resultCode == RESULT_OK) {
             String title = data.getStringExtra(EditRecipeActivity.EXTRA_TITLE);
             String instructions = fileUtilities.readFromFile(title);
-            if(title.equals(recipe.getTitle())){
+            String oldTitle = recipe.getTitle();
+            if (title.equals(oldTitle)) {
+                Log.d("ViewActivity_old", oldTitle);
+                Log.d("ViewActivity_new", title);
+                Log.d("ViewActivity", "Equals");
                 recipe.setInstructions(instructions);
                 mInstructionsEditText.setText(instructions);
             } else {
-                fileUtilities.delete(recipe.getTitle());
+                Log.d("ViewActivity", "Not Equals");
+                Log.d("ViewActivity_old", oldTitle);
+                Log.d("ViewActivity_new", title);
+                File file = new File(getFilesDir(), oldTitle);
+                file.delete();
                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
                 SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putString(title, sharedPref.getString(recipe.getTitle(), "NoImage"));
-                editor.remove(recipe.getTitle());
+                editor.putString(title, sharedPref.getString(oldTitle, "NoImage"));
+                editor.remove(oldTitle);
                 editor.apply();
                 recipe.setTitle(title);
                 recipe.setInstructions(instructions);
                 mTitleEditText.setText(title);
                 mInstructionsEditText.setText(instructions);
+                setTitle(title);
                 fileUtilities.writeToFile(recipe);
             }
         }
     }
 
-    //Check if the user wants to save the current recipe that has been added on back click
-    protected void backSaveDialog() {
-        recipe.setTitle(mTitleEditText.getText().toString());
-        recipe.setInstructions(mInstructionsEditText.getText().toString());
-        //Check if the user has entered any text, otherwise just finish
-        if (recipe.getTitle().length() > 0 || recipe.getInstructions().length() > 0) {
-            new AlertDialog.Builder(this)
-                    .setMessage("Do you want to save the current recipe?")
-                    .setCancelable(false)
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            save();
-                        }
-                    })
-                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            finish();
-                        }
-                    })
-                    .show();
-        } else {
-            finish();
-        }
-    }
-
     //Writes the current recipe to the phones storage
-    private void save() {
+    protected void save() {
         String title = mTitleEditText.getText().toString();
         title = title.trim(); //Check that the title is filled in, and not only consists of space
         if (title.length() > 0) {
+            Log.d("Test_test",Boolean.toString(edit));
             if(fileExists(getFilesDir().listFiles(),title) && !edit){
                 Toast toast = Toast.makeText(this, "That recipe name already exists", Toast.LENGTH_SHORT);
                 toast.show();
@@ -147,8 +135,6 @@ public abstract class ManageRecipeActivity extends Activity {
                 editor.apply();
                 finish();
             }
-
-
         } else {
             Toast toast = Toast.makeText(this, "Title cannot be empty", Toast.LENGTH_SHORT);
             toast.show();
@@ -192,7 +178,7 @@ public abstract class ManageRecipeActivity extends Activity {
 
 
     //Scales the image and sets it in the ImageView
-    private void setPic() {
+    protected void setPic() {
         mImageView.setVisibility(View.VISIBLE);
 
         // Get the dimensions of the View
@@ -223,10 +209,36 @@ public abstract class ManageRecipeActivity extends Activity {
         super.onWindowFocusChanged(hasFocus);
         Log.d("Mange_log_file", Boolean.toString(photoFile.exists()));
         Log.d("Mange_log_focus", Boolean.toString(hasFocus));
+        Log.d("Mange_log_focus", photoFile.getName());
         if (photoFile.exists() && hasFocus) {
             setPic();
         } else {
             mImageView.setVisibility(View.INVISIBLE);
         }
+    }
+
+    void showDialog() {
+        recipe.setTitle(mTitleEditText.getText().toString());
+        recipe.setInstructions(mInstructionsEditText.getText().toString());
+        //Check if the user has entered any text, otherwise just finish
+        if (recipe.getTitle().length() > 0 || recipe.getInstructions().length() > 0) {
+            DialogFragment newFragment = MyAlertDialogFragment.newInstance(
+                    R.string.action_settings);
+            newFragment.show(getFragmentManager(), "dialog");
+        }else {
+                finish();
+        }
+    }
+
+    public void doPositiveClick() {
+        // Do stuff here.
+        Log.i("FragmentAlertDialog", "Positive click!");
+        save();
+    }
+
+    public void doNegativeClick() {
+        // Do stuff here.
+        Log.i("FragmentAlertDialog", "Negative click!");
+        finish();
     }
 }

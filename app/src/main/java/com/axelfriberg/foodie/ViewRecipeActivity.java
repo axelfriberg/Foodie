@@ -67,5 +67,4 @@ public class ViewRecipeActivity extends ManageRecipeActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
 }

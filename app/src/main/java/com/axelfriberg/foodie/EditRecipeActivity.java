@@ -46,7 +46,8 @@ public class EditRecipeActivity extends ManageRecipeActivity {
                 Intent intent = new Intent();
                 intent.putExtra(EXTRA_TITLE, mTitleEditText.getText().toString());
                 setResult(RESULT_OK, intent);
-                backSaveDialog();
+                save();
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -58,6 +59,6 @@ public class EditRecipeActivity extends ManageRecipeActivity {
         Intent intent = new Intent();
         intent.putExtra(EXTRA_TITLE, mTitleEditText.getText().toString());
         setResult(RESULT_OK, intent);
-        backSaveDialog();
+        showDialog();
     }
 }

@@ -3,6 +3,7 @@ package com.axelfriberg.foodie;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -15,6 +16,7 @@ import android.widget.ListView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 
 
 public class MainActivity extends ListActivity {
@@ -38,6 +40,8 @@ public class MainActivity extends ListActivity {
         for(File file : files){
             items.add(file.getName());
         }
+
+        Collections.sort(items);
 
         // initialize and set the list adapter
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, items);
@@ -138,13 +142,11 @@ public class MainActivity extends ListActivity {
         ArrayList<String> list = new ArrayList<>();
         adapter.clear();
         for(File f : files) {
+            Log.d("MainActivity", f.getName());
             list.add(f.getName());
         }
+        Collections.sort(list);
         adapter.addAll(list);
-        /*
-        if(adapter.getCount() < files.length){
-            adapter.add(files[files.length - 1].getName());
-        }*/
         adapter.notifyDataSetChanged();
     }
 
