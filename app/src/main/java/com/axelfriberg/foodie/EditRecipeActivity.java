@@ -26,12 +26,13 @@ public class EditRecipeActivity extends ManageRecipeActivity {
         recipe = new Recipe(title, instructions);
         fileUtilities = new FileUtilities(this);
 
+        //Get a potential image
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String defaultValue = getResources().getString(R.string.image_path_default);
         mCurrentPhotoPath = prefs.getString(title, defaultValue);
 
         photoFile = new File(mCurrentPhotoPath);
-        edit = true;
+        edit = true; //So the app knows that the edit activity is started
     }
 
     @Override
@@ -49,6 +50,13 @@ public class EditRecipeActivity extends ManageRecipeActivity {
                 save();
                 finish();
                 return true;
+            case R.id.done_button:
+                Intent intentDone = new Intent();
+                intentDone.putExtra(EXTRA_TITLE, mTitleEditText.getText().toString());
+                setResult(RESULT_OK, intentDone);
+                save();
+                finish();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -59,6 +67,7 @@ public class EditRecipeActivity extends ManageRecipeActivity {
         Intent intent = new Intent();
         intent.putExtra(EXTRA_TITLE, mTitleEditText.getText().toString());
         setResult(RESULT_OK, intent);
-        showSaveDialog();
+        save();
+        finish();
     }
 }

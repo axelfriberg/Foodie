@@ -28,6 +28,10 @@ public class FileUtilities {
         this.context = context;
     }
 
+    /**
+     * Writes a recipe object to the phones memory
+     * @param r The recipe that should be saved
+     */
     public void writeToFile(Recipe r) {
         String title = r.getTitle();
         String instructions = r.getInstructions();
@@ -42,6 +46,12 @@ public class FileUtilities {
             Log.e("Exception", "File write failed: " + e.toString());
         }
     }
+
+    /**
+     * Reads a specified file from the memory
+     * @param fileName The name of the file that should be read
+     * @return The instructions from the file
+     */
 
     public String readFromFile(String fileName) {
         String ret = "";
@@ -61,7 +71,6 @@ public class FileUtilities {
                     sb.setLength(sb.length() - 1); //Remove the last added linebreak
                 }
 
-
                 inputStream.close();
                 ret = sb.toString();
             }
@@ -74,6 +83,11 @@ public class FileUtilities {
         return ret;
     }
 
+    /**
+     * Deletes a specified file from the memory
+     * @param fileName
+     * @return If the deletion was successful or not
+     */
     public boolean delete(String fileName){
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedPref.edit();

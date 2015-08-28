@@ -1,23 +1,16 @@
 package com.axelfriberg.foodie;
 
-
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.ListActivity;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,7 +39,6 @@ public class GroceryListActivity extends ListActivity {
             setListAdapter(adapter);
         }
 
-
         mListView = getListView();
         mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
     }
@@ -68,7 +60,6 @@ public class GroceryListActivity extends ListActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.add_grocery_button){
                 showAddDialog();
-
                 return true;
         }
 
@@ -79,7 +70,6 @@ public class GroceryListActivity extends ListActivity {
     public void onListItemClick(ListView l, View v, int position, long id) {
         String item = (String) l.getItemAtPosition(position);
         deleteItem(item);
-
     }
 
     @Override
@@ -87,6 +77,7 @@ public class GroceryListActivity extends ListActivity {
         super.onResume();  // Always call the superclass method first
     }
 
+    //Deletes a specified item from the list
     private void deleteItem(String s){
         adapter.remove(s);
         ArrayList<String> list = readFromGroceryList();
@@ -99,6 +90,7 @@ public class GroceryListActivity extends ListActivity {
         adapter.notifyDataSetChanged();
     }
 
+    //Writes the new item to a string in shared preferences
     private void writeToGroceryList(String s) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -106,6 +98,7 @@ public class GroceryListActivity extends ListActivity {
         editor.apply();
     }
 
+    //Reads from the string in shared preferences
     private ArrayList<String> readFromGroceryList() {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String items = sharedPref.getString(GROCERY_LIST, NO_ITEMS);
@@ -113,6 +106,7 @@ public class GroceryListActivity extends ListActivity {
         return new ArrayList<>(Arrays.asList(split));
     }
 
+    //Shows a dialog so the user can add new items
     void showAddDialog() {
         DialogFragment newFragment = MyAlertDialogFragment.newInstance(
                 R.string.alert_dialog_grocery_title);
@@ -120,7 +114,7 @@ public class GroceryListActivity extends ListActivity {
 
     }
 
-    public void doPositiveClick(String newItem) {
+    void doPositiveClick(String newItem) {
         Log.i("FragmentAlertDialog", "Positive click!");
         newItem = newItem.trim();
         if(newItem.length() >= 1) {
@@ -138,7 +132,7 @@ public class GroceryListActivity extends ListActivity {
         }
     }
 
-    public void doNegativeClick() {
+    void doNegativeClick() {
         // Do stuff here.
         Log.i("FragmentAlertDialog", "Negative click!");
 

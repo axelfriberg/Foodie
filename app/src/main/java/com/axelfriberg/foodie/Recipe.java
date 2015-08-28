@@ -24,18 +24,34 @@ public class Recipe implements Parcelable {
         this.instructions = instructions;
     }
 
+    /**
+     * Set the title of the recipe.
+     * @param t The title
+     */
     public void setTitle(String t){
         title = t;
     }
 
+    /**
+     * Set the instructions of the recipe
+     * @param i The instructions
+     */
     public void setInstructions(String i){
         instructions = i;
     }
 
+    /**
+     * Get the title of the recipe.
+     * @return The title
+     */
     public String getTitle(){
         return title;
     }
 
+    /**
+     * Get the instructions of the recipe.
+     * @return The instructions
+     */
     public String getInstructions(){
         return instructions;
     }

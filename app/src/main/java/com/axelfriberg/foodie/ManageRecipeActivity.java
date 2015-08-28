@@ -77,8 +77,6 @@ public abstract class ManageRecipeActivity extends Activity {
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d("ManageActivitiy_result", Integer.toString(requestCode));
-        Log.d("ManageActivitiy_result", Integer.toString(resultCode));
         //If the user took a picture using the intent, set it in the ImageView.
         if (requestCode == CAPTURE_IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {
             setPic();
@@ -88,15 +86,10 @@ public abstract class ManageRecipeActivity extends Activity {
             String instructions = fileUtilities.readFromFile(title);
             String oldTitle = recipe.getTitle();
             if (title.equals(oldTitle)) {
-                Log.d("ViewActivity_old", oldTitle);
-                Log.d("ViewActivity_new", title);
-                Log.d("ViewActivity", "Equals");
                 recipe.setInstructions(instructions);
                 mInstructionsEditText.setText(instructions);
             } else {
-                Log.d("ViewActivity", "Not Equals");
-                Log.d("ViewActivity_old", oldTitle);
-                Log.d("ViewActivity_new", title);
+                //The title has been changed, so delete the old title a save a new file
                 File file = new File(getFilesDir(), oldTitle);
                 file.delete();
                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -119,7 +112,6 @@ public abstract class ManageRecipeActivity extends Activity {
         String title = mTitleEditText.getText().toString();
         title = title.trim(); //Check that the title is filled in, and not only consists of space
         if (title.length() > 0) {
-            Log.d("Test_test",Boolean.toString(edit));
             if(fileExists(getFilesDir().listFiles(),title) && !edit){
                 Toast toast = Toast.makeText(this, "That recipe name already exists", Toast.LENGTH_SHORT);
                 toast.show();
@@ -133,7 +125,6 @@ public abstract class ManageRecipeActivity extends Activity {
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putString(title, mCurrentPhotoPath);
                 editor.apply();
-                finish();
             }
         } else {
             Toast toast = Toast.makeText(this, "Title cannot be empty", Toast.LENGTH_SHORT);
@@ -207,9 +198,6 @@ public abstract class ManageRecipeActivity extends Activity {
     //Used in case of rotation or something similar to set the picture again
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        Log.d("Mange_log_file", Boolean.toString(photoFile.exists()));
-        Log.d("Mange_log_focus", Boolean.toString(hasFocus));
-        Log.d("Mange_log_focus", photoFile.getName());
         if (photoFile.exists() && hasFocus) {
             setPic();
         } else {
@@ -228,30 +216,5 @@ public abstract class ManageRecipeActivity extends Activity {
         }else {
                 finish();
         }
-    }
-
-    void showAddDialog() {
-        recipe.setTitle(mTitleEditText.getText().toString());
-        recipe.setInstructions(mInstructionsEditText.getText().toString());
-        //Check if the user has entered any text, otherwise just finish
-        if (recipe.getTitle().length() > 0 || recipe.getInstructions().length() > 0) {
-            DialogFragment newFragment = MyAlertDialogFragment.newInstance(
-                    R.string.alert_dialog_save_title);
-            newFragment.show(getFragmentManager(), "dialog");
-        }else {
-            finish();
-        }
-    }
-
-    public void doPositiveClick() {
-        // Do stuff here.
-        Log.i("FragmentAlertDialog", "Positive click!");
-        save();
-    }
-
-    public void doNegativeClick() {
-        // Do stuff here.
-        Log.i("FragmentAlertDialog", "Negative click!");
-        finish();
     }
 }

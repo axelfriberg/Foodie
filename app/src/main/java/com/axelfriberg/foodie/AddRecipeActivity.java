@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.io.File;
+
 public class AddRecipeActivity extends ManageRecipeActivity {
     static final String STATE_PATH = "imagePath";
 
@@ -42,9 +44,10 @@ public class AddRecipeActivity extends ManageRecipeActivity {
         showSaveDialog();
     }
 
+
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        // Save the user's current game state
+        // Save the user's current photo
         savedInstanceState.putString(STATE_PATH, mCurrentPhotoPath);
 
         // Always call the superclass so it can save the view hierarchy state
@@ -55,10 +58,14 @@ public class AddRecipeActivity extends ManageRecipeActivity {
         // Always call the superclass so it can restore the view hierarchy
         super.onRestoreInstanceState(savedInstanceState);
 
-        // Restore state members from saved instance
+        // Restore photo path
         mCurrentPhotoPath = savedInstanceState.getString(STATE_PATH);
+        photoFile = new File(mCurrentPhotoPath);
     }
 
+
+
+    //Creates a dialog to make sure if the user wants to save the recipe, if text has been entered
     void showSaveDialog() {
         recipe.setTitle(mTitleEditText.getText().toString());
         recipe.setInstructions(mInstructionsEditText.getText().toString());
@@ -73,13 +80,11 @@ public class AddRecipeActivity extends ManageRecipeActivity {
     }
 
     public void doPositiveClick() {
-        // Do stuff here.
         Log.i("FragmentAlertDialog", "Positive click!");
         save();
     }
 
     public void doNegativeClick() {
-        // Do stuff here.
         Log.i("FragmentAlertDialog", "Negative click!");
         finish();
     }
