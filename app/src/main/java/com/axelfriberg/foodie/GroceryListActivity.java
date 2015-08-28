@@ -2,11 +2,14 @@ package com.axelfriberg.foodie;
 
 
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -14,6 +17,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,29 +67,8 @@ public class GroceryListActivity extends ListActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.add_grocery_button){
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("Add a list item");
-                builder.setMessage("What do you want to add?");
-                final EditText inputField = new EditText(this);
-                builder.setView(inputField);
-                builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        String inputString = inputField.getText().toString();
-                        ArrayList<String> old = readFromGroceryList();
-                        old.add(inputString);
-                        adapter.add(inputString);
-                        StringBuilder sb = new StringBuilder();
-                        for(String s : old){
-                            sb.append(s).append("\n");
-                        }
-                        writeToGroceryList(sb.toString());
-                        adapter.notifyDataSetChanged();
-                    }
-                });
+                showAddDialog();
 
-                builder.setNegativeButton("Cancel",null);
-                builder.create().show();
                 return true;
         }
 
@@ -128,5 +111,36 @@ public class GroceryListActivity extends ListActivity {
         String items = sharedPref.getString(GROCERY_LIST, NO_ITEMS);
         String[] split = items.split("\\s+");
         return new ArrayList<>(Arrays.asList(split));
+    }
+
+    void showAddDialog() {
+        DialogFragment newFragment = MyAlertDialogFragment.newInstance(
+                R.string.alert_dialog_grocery_title);
+        newFragment.show(getFragmentManager(), "dialog");
+
+    }
+
+    public void doPositiveClick(String newItem) {
+        Log.i("FragmentAlertDialog", "Positive click!");
+        newItem = newItem.trim();
+        if(newItem.length() >= 1) {
+            ArrayList<String> old = readFromGroceryList();
+            old.add(newItem);
+            adapter.add(newItem);
+            StringBuilder sb = new StringBuilder();
+            for (String s : old) {
+                sb.append(s).append(" ");
+            }
+            writeToGroceryList(sb.toString());
+            adapter.notifyDataSetChanged();
+        } else {
+            Log.i("FragmentAlertDialog", "Empty title");
+        }
+    }
+
+    public void doNegativeClick() {
+        // Do stuff here.
+        Log.i("FragmentAlertDialog", "Negative click!");
+
     }
 }

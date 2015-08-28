@@ -59,6 +59,6 @@ public class EditRecipeActivity extends ManageRecipeActivity {
         Intent intent = new Intent();
         intent.putExtra(EXTRA_TITLE, mTitleEditText.getText().toString());
         setResult(RESULT_OK, intent);
-        showDialog();
+        showSaveDialog();
     }
 }

@@ -217,16 +217,29 @@ public abstract class ManageRecipeActivity extends Activity {
         }
     }
 
-    void showDialog() {
+    void showSaveDialog() {
         recipe.setTitle(mTitleEditText.getText().toString());
         recipe.setInstructions(mInstructionsEditText.getText().toString());
         //Check if the user has entered any text, otherwise just finish
         if (recipe.getTitle().length() > 0 || recipe.getInstructions().length() > 0) {
             DialogFragment newFragment = MyAlertDialogFragment.newInstance(
-                    R.string.action_settings);
+                    R.string.alert_dialog_save_title);
             newFragment.show(getFragmentManager(), "dialog");
         }else {
                 finish();
+        }
+    }
+
+    void showAddDialog() {
+        recipe.setTitle(mTitleEditText.getText().toString());
+        recipe.setInstructions(mInstructionsEditText.getText().toString());
+        //Check if the user has entered any text, otherwise just finish
+        if (recipe.getTitle().length() > 0 || recipe.getInstructions().length() > 0) {
+            DialogFragment newFragment = MyAlertDialogFragment.newInstance(
+                    R.string.alert_dialog_save_title);
+            newFragment.show(getFragmentManager(), "dialog");
+        }else {
+            finish();
         }
     }
 

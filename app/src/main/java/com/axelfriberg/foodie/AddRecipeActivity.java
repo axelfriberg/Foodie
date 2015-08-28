@@ -1,6 +1,8 @@
 package com.axelfriberg.foodie;
 
+import android.app.DialogFragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -28,7 +30,7 @@ public class AddRecipeActivity extends ManageRecipeActivity {
 
         switch (id) {
             case android.R.id.home:
-                showDialog();
+                showSaveDialog();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -37,7 +39,7 @@ public class AddRecipeActivity extends ManageRecipeActivity {
 
     @Override
     public void onBackPressed() {
-        showDialog();
+        showSaveDialog();
     }
 
     @Override
@@ -55,5 +57,30 @@ public class AddRecipeActivity extends ManageRecipeActivity {
 
         // Restore state members from saved instance
         mCurrentPhotoPath = savedInstanceState.getString(STATE_PATH);
+    }
+
+    void showSaveDialog() {
+        recipe.setTitle(mTitleEditText.getText().toString());
+        recipe.setInstructions(mInstructionsEditText.getText().toString());
+        //Check if the user has entered any text, otherwise just finish
+        if (recipe.getTitle().length() > 0 || recipe.getInstructions().length() > 0) {
+            DialogFragment newFragment = MyAlertDialogFragment.newInstance(
+                    R.string.alert_dialog_save_title);
+            newFragment.show(getFragmentManager(), "dialog");
+        }else {
+            finish();
+        }
+    }
+
+    public void doPositiveClick() {
+        // Do stuff here.
+        Log.i("FragmentAlertDialog", "Positive click!");
+        save();
+    }
+
+    public void doNegativeClick() {
+        // Do stuff here.
+        Log.i("FragmentAlertDialog", "Negative click!");
+        finish();
     }
 }

@@ -22,4 +22,7 @@
     <string name ="alert_dialog_save_title">Do you want to save this recipe?</string>
     <string name ="alert_dialog_save_yes">Yes</string>
     <string name ="alert_dialog_save_no">No</string>
+    <string name ="alert_dialog_grocery_title">What do you want to add?</string>
+    <string name ="alert_dialog_grocery_ok">Ok</string>
+    <string name ="alert_dialog_grocery_cancel">Cancel</string>
 </resources>
